@@ -1,70 +1,22 @@
-const express = require("express")
-const app = express()
-const products = require("./data.json")
+const express = require("express");
+const app = express();
+
+const productRouter = require("./Routes/products");
+const userRouter = require("./Routes/users");
 
 
-// In back end  we generally use 4 method  called  CRUD
-// Create POST / Product
-//******************** Create Data base **********************
-app.post("/products",(req,res)=>{
-  products.push(req.body)
-  res.status(201).json(req.body)
-})
+// app.use(express.static("public"))
 
-//******************** Read Data base **********************
-app.get("/products",(req,res)=>{
-  res.json(products)
-})
-app.get("/products/:id", (req, res) => {
-  const id = +req.params.id;
-  const product = products.products.find(p => p.id === id); // Use products.products to access the array
-  if (product) {
-    res.json(product);
-  } else {
-    res.status(404).json({ message: "Product not found" });
-  }
-});
+app.use("/product", productRouter);
+app.use("/user", userRouter);
 
-// ********************** Update Data base *********************
-app.put("/products/:id", (req, res) => {
-  const id = +req.params.id;
-  const productIndex = products.findIndex(p => p.id === id);
-  if (productIndex !== -1) {
-    products[productIndex] = { ...req.body, id: id };
-    res.status(201).json();
-  } else {
-    res.status(404).json({ message: "Product not found" });
-  }
+
+app.listen(3000, () => {
+  console.log("Server running on port 3000");
 });
 
 
-app.patch("/products/:id", (req, res) => {
-  const id = +req.params.id;
-  const productIndex = products.findIndex(p => p.id === id);
-  const product = product[productIndex]
-  products.splice(productIndex,1,{product,...req.body})
-  res.status(201).json()
-  if (productIndex !== -1) {
-    products[productIndex] = { ...req.body, id: id };
-    res.status(201).json();
-  } else {
-    res.status(404).json({ message: "Product not found" });
-  }
-});
-
-// ********************** Delete Data base *********************
-app.delete("/products/:id", (req, res) => {
-  const id = +req.params.id;
-  const productIndex = products.findIndex(p => p.id === id);
-   const product = product[productIndex]
-   products.splice(productIndex,1)
-   res.status(201).json(product)
-});
-
-app.listen(3000,()=>{
-  console.log("server running on port 3000")
-})
-
+// ********************************************************************
 // second old code 
 // const  fs = require("fs")
 // const products = require("./data.json")
